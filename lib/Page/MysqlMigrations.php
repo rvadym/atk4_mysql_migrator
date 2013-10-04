@@ -28,7 +28,7 @@ class Page_MysqlMigrations extends \Page {
         $b->add('VirtualPage')
             ->bindEvent('Create migration','click')
             ->set(function($page){
-                $page->add('Form_CreateMigration');
+                $page->add('Form_Migration');
             });
 
     }

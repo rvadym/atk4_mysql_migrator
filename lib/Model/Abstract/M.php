@@ -8,8 +8,8 @@
  */
 namespace atk4_mysql_migrator;
 abstract class Model_Abstract_M extends \AbstractModel {
-    public $id      = null;
     public $type    = null;
+    private $id     = null;
     private $fields = array();
     function init() {
         parent::init();
@@ -31,43 +31,37 @@ abstract class Model_Abstract_M extends \AbstractModel {
         if (!$this->hasField($field)) throw $this->exception('Model doesn\'t have field '.$field);
         return $this->fields[$field];
     }
+    function getId() {
+        if (is_null($this->id)) $this->id = $this->generateFileName();
+        return $this->id;
+    }
+    private function generateFileName() {
+        $name = $this->prefix.'-'.time();
+        return $name;
+    }
 
+    // load
     private function _load($path) {
         var_dump($path);
     }
-
-
-
     function load($filename){
         if (!$this->type) throw $this->exception();
-        switch ($this->type) {
-            case 'migration':
-                $this->_load($this->utility->getMigrationsDirPath().$filename);
-                break;
-            case 'dump':
-                $this->_load($this->utility->getDumpsDirPath().$filename);
-                break;
-            default:
-                throw $this->exception('Don\'t know how to load type '.$this->type);
-        }
+        $this->_load($this->utility->getDirPathByType($this->type).$this->getId().$filename);
         return $this;
     }
 
+    // save
     private function _save($path) {
-        var_dump($path);
+        $file_text = $this->configureFileText();
+        $this->utility->createFile($path,$file_text);
     }
-    function save($filename){
+    function save(){
         if (!$this->type) throw $this->exception();
-        switch ($this->type) {
-            case 'migration':
-                $this->_save($this->utility->getMigrationsDirPath().$filename);
-                break;
-            case 'dump':
-                $this->_save($this->utility->getDumpsDirPath().$filename);
-                break;
-            default:
-                throw $this->exception('Don\'t know how to save type '.$this->type);
-        }
+        $this->_save($this->utility->getDirPathByType($this->type).$this->getId());
         return $this;
+    }
+
+    function configureFileText() {
+        throw $this->exception('Redefine this function in your model class');
     }
 }

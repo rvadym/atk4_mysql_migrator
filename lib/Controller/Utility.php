@@ -8,8 +8,8 @@
  */
 namespace atk4_mysql_migrator;
 class Controller_Utility extends \AbstractController {
-    public $migrations_dir = '_files/migrations';
-    public $dumps_dir      = '_files/dumps';
+    public $migrations_dir = '_files/migrations/';
+    public $dumps_dir      = '_files/dumps/';
     function init() {
         parent::init();
         // add add-on locations to pathfinder
@@ -82,11 +82,29 @@ class Controller_Utility extends \AbstractController {
             throw $this->exception('dumps dir is not writable','atk4_mysql_migrator\Exception_NoDumpsDirAccess');
         }
     }
+    function getDirPath($dir) {
+        $path = $this->api->pm->base_directory.$dir;
+        $this->checkDir($path);
+        $this->checkDirRights($path);
+        return $path;
+    }
     function getMigrationsDirPath() {
-        return $this->api->pm->base_directory.$this->migrations_dir;
+        return $this->getDirPath($this->migrations_dir);
     }
     function getDumpsDirPath() {
-        return $this->api->pm->base_directory.$this->dumps_dir;
+        return $this->getDirPath($this->dumps_dir);
+    }
+    function getDirPathByType($type) {
+        switch ($type) {
+            case 'migration':
+                return $this->getMigrationsDirPath();
+                break;
+            case 'dump':
+                return $this->getDumpsDirPath();
+                break;
+            default:
+                throw $this->exception('Don\'t know how to save type '.$this->type);
+        }
     }
 
     /* **********************
@@ -97,7 +115,8 @@ class Controller_Utility extends \AbstractController {
     function fileExist($path) {
         return file_exists($path);
     }
-    function createFile($path,$name,$content) {
+    function createFile($path,$content) {
         if ($this->fileExist($path)) throw $this->exception('this file already exist','Exception_FileAlreadyExist');
+        if(file_put_contents($path,$content) === false) throw $this->exception('cannot create file');
     }
 }
