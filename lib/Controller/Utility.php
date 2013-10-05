@@ -118,5 +118,41 @@ class Controller_Utility extends \AbstractController {
     function createFile($path,$content) {
         if ($this->fileExist($path)) throw $this->exception('this file already exist','Exception_FileAlreadyExist');
         if(file_put_contents($path,$content) === false) throw $this->exception('cannot create file');
+        chmod($path,'0777');
+    }
+    function getAllFiles($type) {
+        $arr = array();
+        $path = $this->getDirPathByType($type);
+        $files = $this->readDir($path);
+        foreach ($files as $file) {
+            $text = $this->readFile($path.$file);
+            //echo(nl2br(htmlspecialchars($text)));echo '<hr>';
+            $arr[] = $this->parseFile($text);
+        }
+        return $arr;
+    }
+    function readDir($path) {
+        $arr = scandir($path);
+        unset($arr[0]);
+        unset($arr[1]);
+        return $arr;
+    }
+    function readFile($path) {
+        $text = file_get_contents($path);
+        return $text;
+    }
+    function parseFile($text) {
+        $arr = array(
+            'id'    => $this->getByTag('MIGR_ID',$text),
+            'name'  => $this->getByTag('MIGR_NAME',$text),
+            'descr' => $this->getByTag('MIGR_DESCR',$text),
+            'query' => $this->getByTag('MIGR_QUERY',$text),
+            'status'=> $this->getByTag('MIGR_STATUS',$text),
+        );
+        return $arr;
+    }
+    private function getByTag($tag,$text) {
+        preg_match_all('/<'.$tag.'>(.*?)<\/'.$tag.'>/s', $text, $matches);
+        return $matches[1][0];
     }
 }

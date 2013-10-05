@@ -23,13 +23,24 @@ class Page_MysqlMigrations extends \Page {
         $tt->addTabUrl('./migrations');
     }
     function page_migrations() {
+        $page_name = $this->name;
+
         if ($this->errors_count > 0) return;
         $b = $this->add('Button')->set('Create migration');
         $b->add('VirtualPage')
             ->bindEvent('Create migration','click')
-            ->set(function($page){
-                $page->add('Form_Migration');
+            ->set(function($page) use ($page_name){
+                $page->add('atk4_mysql_migrator\Form_Migration');
+                $page->js(true)->closest(".ui-dialog")->on("dialogbeforeclose",
+                    $page->js(null,'function(event, ui){
+                             //alert("Text will be changed now!");
+                             '. $page->js()->_selector('#'.$page_name.'_migrgrid')->trigger('reload') .';
+                         }
+                    ')
+                );
             });
+
+        $this->add('atk4_mysql_migrator\Grid_Migrations','migrgrid');
 
     }
 

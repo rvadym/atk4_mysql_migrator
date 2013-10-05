@@ -45,7 +45,7 @@ abstract class Model_Abstract_M extends \AbstractModel {
         var_dump($path);
     }
     function load($filename){
-        if (!$this->type) throw $this->exception();
+        if (!$this->type) throw $this->exception('type is required');
         $this->_load($this->utility->getDirPathByType($this->type).$this->getId().$filename);
         return $this;
     }
@@ -56,9 +56,14 @@ abstract class Model_Abstract_M extends \AbstractModel {
         $this->utility->createFile($path,$file_text);
     }
     function save(){
-        if (!$this->type) throw $this->exception();
+        if (!$this->type) throw $this->exception('type is required');
         $this->_save($this->utility->getDirPathByType($this->type).$this->getId());
         return $this;
+    }
+
+    // get all
+    function getAll() {
+        return $this->utility->getAllFiles($this->type);
     }
 
     function configureFileText() {

@@ -6,6 +6,7 @@
  * Time: 4:21 PM
  * To change this template use File | Settings | File Templates.
  */
+namespace atk4_mysql_migrator;
 class Form_Migration extends \Form {
     function init() {
         parent::init();
