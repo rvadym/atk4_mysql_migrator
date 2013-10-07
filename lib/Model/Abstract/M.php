@@ -42,12 +42,22 @@ abstract class Model_Abstract_M extends \AbstractModel {
 
     // load
     private function _load($path) {
-        var_dump($path);
+        $file = $this->utility->readFile($path);
+        $arr = $this->utility->parseFile($file);
+        foreach ($arr as $k=>$v) {
+            if ($k != 'id') {
+                $this->set($k,$v);
+            }
+        }
     }
     function load($filename){
+        $secure_filename = $this->makeFilenameSecure($filename);
         if (!$this->type) throw $this->exception('type is required');
-        $this->_load($this->utility->getDirPathByType($this->type).$this->getId().$filename);
+        $this->_load($this->utility->getDirPathByType($this->type)/*.$this->getId()*/.$secure_filename);
         return $this;
+    }
+    function makeFilenameSecure($filename) {
+        return str_replace(array('/','\\','..','.','php'),'', trim($filename));
     }
 
     // save

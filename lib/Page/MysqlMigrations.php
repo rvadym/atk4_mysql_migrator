@@ -43,6 +43,9 @@ class Page_MysqlMigrations extends \Page {
         $this->add('atk4_mysql_migrator\Grid_Migrations','migrgrid');
 
     }
+    function page_migrations_view() {
+        $this->add('atk4_mysql_migrator/Grid_Migration');
+    }
 
 
 

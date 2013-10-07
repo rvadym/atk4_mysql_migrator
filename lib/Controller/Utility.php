@@ -132,22 +132,38 @@ class Controller_Utility extends \AbstractController {
         return $arr;
     }
     function readDir($path) {
-        $arr = scandir($path);
+        try {
+            $arr = scandir($path);
+        } catch (\Exception $e) {
+            if ($this->api->getConfig('atk4_mysql_migrator/debug',false)) {
+                throw $e;
+            } else {
+                throw $this->exception('Cannot scan dir');
+            }
+        }
         unset($arr[0]);
         unset($arr[1]);
         return $arr;
     }
     function readFile($path) {
-        $text = file_get_contents($path);
+        try {
+            $text = file_get_contents($path);
+        } catch (\Exception $e) {
+            if ($this->api->getConfig('atk4_mysql_migrator/debug',false)) {
+                throw $e;
+            } else {
+                throw $this->exception('Cannot read the file');
+            }
+        }
         return $text;
     }
     function parseFile($text) {
         $arr = array(
-            'id'    => $this->getByTag('MIGR_ID',$text),
-            'name'  => $this->getByTag('MIGR_NAME',$text),
-            'descr' => $this->getByTag('MIGR_DESCR',$text),
-            'query' => $this->getByTag('MIGR_QUERY',$text),
-            'status'=> $this->getByTag('MIGR_STATUS',$text),
+            'id'          => $this->getByTag('MIGR_ID',$text),
+            'name'        => $this->getByTag('MIGR_NAME',$text),
+            'description' => $this->getByTag('MIGR_DESCR',$text),
+            'query'       => $this->getByTag('MIGR_QUERY',$text),
+            //'status'=> $this->getByTag('MIGR_STATUS',$text),
         );
         return $arr;
     }
