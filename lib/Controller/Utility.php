@@ -159,7 +159,7 @@ class Controller_Utility extends \AbstractController {
     }
     function parseFile($text) {
         $arr = array(
-            'id'          => $this->getByTag('MIGR_ID',$text),
+            'id'          => str_replace("\n",'',trim($this->getByTag('MIGR_ID',$text))),
             'name'        => $this->getByTag('MIGR_NAME',$text),
             'description' => $this->getByTag('MIGR_DESCR',$text),
             'query'       => $this->getByTag('MIGR_QUERY',$text),

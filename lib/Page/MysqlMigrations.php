@@ -12,6 +12,7 @@ class Page_MysqlMigrations extends \Page {
     function init() {
         parent::init();
         $this->utility = $this->add('atk4_mysql_migrator\Controller_Utility');
+        $this->migrator = $this->add('atk4_mysql_migrator\Controller_Migrator');
 
         $this->checkDB();
         $this->checkTables();
@@ -23,25 +24,13 @@ class Page_MysqlMigrations extends \Page {
         $tt->addTabUrl('./migrations');
     }
     function page_migrations() {
-        $page_name = $this->name;
-
         if ($this->errors_count > 0) return;
-        $b = $this->add('Button')->set('Create migration');
-        $b->add('VirtualPage')
-            ->bindEvent('Create migration','click')
-            ->set(function($page) use ($page_name){
-                $page->add('atk4_mysql_migrator\Form_Migration');
-                $page->js(true)->closest(".ui-dialog")->on("dialogbeforeclose",
-                    $page->js(null,'function(event, ui){
-                             //alert("Text will be changed now!");
-                             '. $page->js()->_selector('#'.$page_name.'_migrgrid')->trigger('reload') .';
-                         }
-                    ')
-                );
-            });
+        $page_name = $this->name;
+        $bs = $this->add('ButtonSet');
+        $this->addCreateMigrationButton($bs,$page_name);
+        $this->addRunAllMigrationsButton($bs,$page_name);
 
         $this->add('atk4_mysql_migrator\Grid_Migrations','migrgrid');
-
     }
     function page_migrations_view() {
         $this->add('atk4_mysql_migrator/Grid_Migration');
@@ -54,6 +43,41 @@ class Page_MysqlMigrations extends \Page {
      *          PRIVATE
      *
      */
+
+    // UI
+    private function addCreateMigrationButton($button_set,$page_name) {
+        $b = $button_set->add('Button')->set('Create migration');
+        $b->add('VirtualPage')
+            ->bindEvent('Create migration','click')
+            ->set(function($page) use ($page_name){
+                $page->add('atk4_mysql_migrator\Form_Migration');
+                $page->js(true)->closest(".ui-dialog")->on("dialogbeforeclose",
+                    $page->js(null,'function(event, ui){
+                             //alert("Text will be changed now!");
+                             '. $page->js()->_selector('#'.$page_name.'_migrgrid')->trigger('reload') .';
+                         }
+                    ')
+                );
+            });
+    }
+    private function addRunAllMigrationsButton($button_set,$page_name) {
+        $b = $button_set->add('Button')->set('Run All Migrations');
+        $b->add('VirtualPage')
+            ->bindEvent('Run All Migrations','click')
+            ->set(function($page) use ($page_name){
+                $page->add('atk4_mysql_migrator\View_RunMigratioins');
+                $page->js(true)->closest(".ui-dialog")->on("dialogbeforeclose",
+                    $page->js(null,'function(event, ui){
+                             //alert("Text will be changed now!");
+                             '. $page->js()->_selector('#'.$page_name.'_migrgrid')->trigger('reload') .';
+                         }
+                    ')
+                );
+            });
+    }
+
+
+    // utility
     private function checkDB() {
         try {
             $this->utility->checkDB();
@@ -70,7 +94,15 @@ class Page_MysqlMigrations extends \Page {
             $this->add('View_Error')->setHTML('
                 <h3>Tables required by this Addon are not created in database</h3>
                 <p>Execute this line to create required table.
-                <p>CREATE TABLE `atk4_mysql_migrator_migration`( `id` INT(11) NOT NULL AUTO_INCREMENT, `name` VARCHAR(255) NOT NULL, PRIMARY KEY (`id`) ) CHARSET=utf8 COLLATE=utf8_general_ci;
+                <p>
+                <pre>
+                CREATE TABLE `atk4_mysql_migrator_migration`(
+                    `id` INT(11) NOT NULL AUTO_INCREMENT,
+                    `name` VARCHAR(255) NOT NULL,
+                    `statuses_json` TEXT NULL,
+                    PRIMARY KEY (`id`)
+                ) CHARSET=utf8 COLLATE=utf8_general_ci;
+                </pre>
             ');
         }
     }
