@@ -24,7 +24,6 @@ class View_RunMigratioins extends \View {
                     $form->js()->atk4_form('fieldError','dump_name','required')->execute();exit;
                 }
                 $migrator->createDump($form->get('dump_name'));
-                exit('ddd');
             }
             $migrator->executeAll();
             $form->js()->univ()->successMessage('Done')->closeDialog()->execute();exit;
