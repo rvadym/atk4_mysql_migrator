@@ -24,7 +24,6 @@ class Grid_Migrations extends \Grid {
         $this->setSource($arr);
 
         $this->statuses = $this->migrator->getStatuses();
-        var_dump($this->statuses);
     }
     function formatRow() {
         parent::formatRow();
