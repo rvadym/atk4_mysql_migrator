@@ -59,6 +59,15 @@ class Controller_Migrator extends \AbstractController {
         }
         return $this->current_point;
     }
+    function getStatus($id,$toupper=true) {
+        $statuses = $this->getStatuses();
+        if (is_object($statuses) && isset($statuses->{$id})) {
+            $status = $statuses->{$id};
+            if ($toupper) $status = strtoupper(trim($statuses->{$id}));
+            return $status;
+        }
+        return false;
+    }
     function getStatuses() {
         $st_json = $this->getCurrentPoint()->get('statuses_json');
         return json_decode($st_json);

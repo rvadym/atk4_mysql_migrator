@@ -40,12 +40,14 @@ class Grid_Migrations extends \Grid {
         $this->current_row_html['view'] = $view->getHTML();
     }
     private function formatStatus() {
-        if (strtoupper(trim($this->current_row['status'])) == 'NEW') {
-            $this->current_row_html['status'] = '<span style="color:grey">NEW</span>';
-        } else if (strtoupper(trim($this->current_row['status'])) == 'OK') {
+        $current_status = $this->migrator->getStatus($this->current_id);
+
+        if ($current_status == 'OK') {
             $this->current_row_html['status'] = '<span style="color:green">OK</span>';
-        } else if (strtoupper(trim($this->current_row['status'])) == 'FAIL') {
+        } else if ($current_status == 'FAIL') {
             $this->current_row_html['status'] = '<span style="color:red">FAIL</span>';
+        } else {
+            $this->current_row_html['status'] = '<span style="color:grey">NEW</span>';
         }
     }
 }
