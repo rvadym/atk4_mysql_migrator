@@ -9,8 +9,7 @@ class Grid_Dump extends \Grid {
 
         $this->api->stickyGet('id');
 
-        $bs = $this->add('ButtonSet',null,'Buttons');
-        $this->addRunDumpButton($bs,$this->page_name);
+        $this->addRunDumpButton($this->page_name);
 
         $this->js('reload')->reload();
         $this->addColumn('field');
@@ -31,8 +30,8 @@ class Grid_Dump extends \Grid {
             $this->current_row_html['value'] = trim($this->current_row['name']);
         }
     }
-    private function addRunDumpButton($button_set,$page_name) {
-        $b = $button_set->add('Button')->set('Run Dump');
+    private function addRunDumpButton($page_name) {
+        $b = $this->addButton('Run Dump');
         $this->id=$_GET['id'];
         $b->add('VirtualPage')
             ->bindEvent('Run Dump','click')
@@ -46,8 +45,5 @@ class Grid_Dump extends \Grid {
                     ')
                 );
             });
-    }
-    function defaultTemplate() {
-        return array('view/grid/dump');
     }
 }
