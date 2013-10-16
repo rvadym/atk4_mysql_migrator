@@ -32,7 +32,6 @@ class Grid_Dump extends \Grid {
     }
     private function addRunDumpButton($page_name) {
         $b = $this->addButton('Run Dump');
-        $this->id=$_GET['id'];
         $b->add('VirtualPage')
             ->bindEvent('Run Dump','click')
             ->set(function($page) use ($page_name){

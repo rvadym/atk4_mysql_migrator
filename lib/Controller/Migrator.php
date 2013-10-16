@@ -78,6 +78,7 @@ class Controller_Migrator extends \AbstractController {
 
     function createDump($name) {
         $dump = $this->getDump();
+
         $m = $this->add('atk4_mysql_migrator/Model_Dump');
         $m->set('name',$name);
         $m->set('query',$dump);
@@ -137,7 +138,8 @@ class Controller_Migrator extends \AbstractController {
             $sData .= "INSERT INTO $sTable VALUES (";
             $sRecord = "";
             foreach( $aRecord as $sField => $sValue ) {
-              $sRecord .= "'$sValue',";
+//              $sRecord .= "'$sValue',";
+              $sRecord .= "'".mysql_real_escape_string($sValue)."',";
             }
             $sData .= substr( $sRecord, 0, -1 );
             $sData .= ");\n";
@@ -170,7 +172,6 @@ class Controller_Migrator extends \AbstractController {
             $sData.="DROP TABLE ".$sTable.";\n";
         }
         $this->query($sData);
-
         $m = $this->add('atk4_mysql_migrator/Model_Dump');
         $m->load($dump_id);
 
