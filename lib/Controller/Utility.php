@@ -127,7 +127,7 @@ class Controller_Utility extends \AbstractController {
         foreach ($files as $file) {
             $text = $this->readFile($path.$file);
             //echo(nl2br(htmlspecialchars($text)));echo '<hr>';
-            $arr[] = $this->parseFile($text);
+            $arr[] = $this->parseFile($text,$type);
         }
         return $arr;
     }
@@ -157,14 +157,18 @@ class Controller_Utility extends \AbstractController {
         }
         return $text;
     }
-    function parseFile($text) {
+    function parseFile($text,$type) {
+        if($type=='migration') $type='migr';
         $arr = array(
-            'id'          => str_replace("\n",'',trim($this->getByTag('MIGR_ID',$text))),
-            'name'        => $this->getByTag('MIGR_NAME',$text),
-            'description' => $this->getByTag('MIGR_DESCR',$text),
-            'query'       => $this->getByTag('MIGR_QUERY',$text),
+            'id'          => str_replace("\n",'',trim($this->getByTag(strtoupper($type).'_ID',$text))),
+            'name'        => $this->getByTag(strtoupper($type).'_NAME',$text),
+            //'description' => $this->getByTag(strtoupper($type).'_DESCR',$text),
+            'query'       => $this->getByTag(strtoupper($type).'_QUERY',$text),
             //'status'=> $this->getByTag('MIGR_STATUS',$text),
         );
+        if ($type=='migr'){
+            $arr['description']=$this->getByTag(strtoupper($type).'_DESCR',$text);
+        }
         return $arr;
     }
     private function getByTag($tag,$text) {

@@ -147,4 +147,33 @@ class Controller_Migrator extends \AbstractController {
 
         return $sData;
     }
+    function applyDump($dump_id) {
+        $dsn = $this->api->getConfig('dsn');
+        $arr = explode('/',$dsn);
+
+        $sDatabase = array_pop($arr);
+
+        $PDO = $this->pdo;
+        $PDO->setAttribute( \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION );
+
+        //$sQuery = "SHOW tables FROM " . $sDatabase;
+        $sQuery = "SHOW tables FROM " . $sDatabase;
+        $sResult = $PDO->query($sQuery);
+        $sData = "\n"
+            ."SET SQL_MODE=\"NO_AUTO_VALUE_ON_ZERO\";\n"
+            ."\n";
+
+        while ($aTable = $sResult->fetch(\PDO::FETCH_ASSOC)) {
+
+            $sTable = $aTable['Tables_in_' . $sDatabase];
+
+            $sData.="DROP TABLE ".$sTable.";\n";
+        }
+        $this->query($sData);
+
+        $m = $this->add('atk4_mysql_migrator/Model_Dump');
+        $m->load($dump_id);
+
+        $this->query($m->get('query'));
+    }
 }

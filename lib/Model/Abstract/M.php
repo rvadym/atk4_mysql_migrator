@@ -43,7 +43,7 @@ abstract class Model_Abstract_M extends \AbstractModel {
     // load
     private function _load($path) {
         $file = $this->utility->readFile($path);
-        $arr = $this->utility->parseFile($file);
+        $arr = $this->utility->parseFile($file,$this->type);
         foreach ($arr as $k=>$v) {
             if ($k != 'id') {
                 $this->set($k,$v);

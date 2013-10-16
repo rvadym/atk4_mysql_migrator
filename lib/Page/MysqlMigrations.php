@@ -22,6 +22,7 @@ class Page_MysqlMigrations extends \Page {
         if ($this->errors_count > 0) return;
         $tt = $this->add('Tabs');
         $tt->addTabUrl('./migrations');
+        $tt->addTabUrl('./dumps');
     }
     function page_migrations() {
         if ($this->errors_count > 0) return;
@@ -32,8 +33,16 @@ class Page_MysqlMigrations extends \Page {
 
         $this->add('atk4_mysql_migrator\Grid_Migrations','migrgrid');
     }
+    function page_dumps() {
+        if ($this->errors_count > 0) return;
+
+        $this->add('atk4_mysql_migrator\Grid_Dumps','dumpgrid');
+    }
     function page_migrations_view() {
         $this->add('atk4_mysql_migrator/Grid_Migration');
+    }
+    function page_dumps_view() {
+        $this->add('atk4_mysql_migrator/Grid_Dump',array('page_name'=>$this->name));
     }
 
 

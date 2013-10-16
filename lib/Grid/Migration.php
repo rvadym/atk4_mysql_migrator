@@ -24,12 +24,12 @@ class Grid_Migration extends \Grid {
     }
     function formatRow() {
         $this->current_row['field'] = $this->current_row['id'];
-        $this->current_row['value'] = $this->current_row['name'];
+        $this->current_row['value'] = trim($this->current_row['name']);
         if ($this->current_row['id'] == 'query') {
             $geshi = new \GeSHi($this->current_row['value'],'mysql');
             $this->current_row_html['value'] = $geshi->parse_code();
         } else {
-            $this->current_row_html['value'] = '';
+            $this->current_row_html['value'] = trim($this->current_row['name']);
         }
     }
 }
