@@ -8,8 +8,8 @@
  */
 namespace atk4_mysql_migrator;
 class Controller_Utility extends \AbstractController {
-    public $migrations_dir = '_files/migrations/';
-    public $dumps_dir      = '_files/dumps/';
+    public $migrations_dir = '/_files/migrations/';
+    public $dumps_dir      = '/_files/dumps/';
     function init() {
         parent::init();
         // add add-on locations to pathfinder
@@ -19,7 +19,7 @@ class Controller_Utility extends \AbstractController {
             'php'=>'lib',
             'template'=>'templates',
             'css'=>'templates/css',
-		))->setParent($this->loc);
+		))->setBasePath($this->loc->base_path.'/'.$addon_location);
     }
 
     /* **********************
@@ -82,10 +82,10 @@ class Controller_Utility extends \AbstractController {
             throw $this->exception('dumps dir is not writable','atk4_mysql_migrator\Exception_NoDumpsDirAccess');
         }
     }
-    function getDirPath($dir) {
-        $path = $this->api->pm->base_directory.$dir;
+    function getDirPath($dir) {;
+        $path = $this->api->pathfinder->base_location->base_path.$dir;
         $this->checkDir($path);
-        $this->checkDirRights($path);
+        //$this->checkDirRights($path);
         return $path;
     }
     function getMigrationsDirPath() {

@@ -120,7 +120,7 @@ class Page_MysqlMigrations extends \Page {
             $this->utility->checkMigrationsDir();
         } catch (Exception_MigrationsDirNotExist $e) {
             $this->errors_count++;
-            $this->add('View_Error')->setHTML('<h3>There is no \'migrations\' dir.</h3>');
+            $this->add('View_Error')->setHTML('<h3>There is no \'migrations\' dir. Should be located *project base_path*/_files/migrations</h3>');
         } catch (Exception_NoMigrationsDirAccess $e) {
             $this->errors_count++;
             $this->add('View_Error')->setHTML('<h3>\'migrations\' dir is not writable.</h3>');
@@ -129,7 +129,7 @@ class Page_MysqlMigrations extends \Page {
             $this->utility->checkDumpsDir();
         } catch (Exception_DumpsDirNotExist $e) {
             $this->errors_count++;
-            $this->add('View_Error')->setHTML('<h3>There is no \'dumps\' dir.</h3>');
+            $this->add('View_Error')->setHTML('<h3>There is no \'dumps\' dir. Should be located *project base_path*/_files/dumps</h3>');
         } catch (Exception_NoDumpsDirAccess $e) {
             $this->errors_count++;
             $this->add('View_Error')->setHTML('<h3>\'dumps\' dir is not writable.</h3>');
