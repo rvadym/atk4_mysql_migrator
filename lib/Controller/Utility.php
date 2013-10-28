@@ -85,7 +85,7 @@ class Controller_Utility extends \AbstractController {
     function getDirPath($dir) {
         $path = $this->api->pm->base_directory.$dir;
         $this->checkDir($path);
-        $this->checkDirRights($path);
+        //$this->checkDirRights($path);
         return $path;
     }
     function getMigrationsDirPath() {
