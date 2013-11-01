@@ -9,9 +9,14 @@
 namespace atk4_mysql_migrator;
 class Model_Dump extends Model_Abstract_M {
     public $type   = 'dump';
-    public $prefix = 'JADSC-dump';
+    public $prefix = null;
     function init() {
         parent::init();
+        if ($this->prefix === null) {
+            $this->prefix = $this->api->getConfig('atk4_mysql_migrator/project_unique_id','NO_NAME').'_dump';
+        }
+        $this->prefix = preg_replace("/[^A-Za-z0-9_]/", '', $this->prefix);
+
         $this->addField('name');
         $this->addField('query');
     }

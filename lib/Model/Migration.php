@@ -9,7 +9,7 @@
 namespace atk4_mysql_migrator;
 class Model_Migration extends Model_Abstract_M {
     public $type   = 'migration';
-    public $prefix = 'JADSC';
+    public $prefix = null;
     function init() {
         parent::init();
         if ($this->prefix === null) {
