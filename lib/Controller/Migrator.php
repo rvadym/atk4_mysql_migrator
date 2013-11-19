@@ -139,7 +139,8 @@ class Controller_Migrator extends \AbstractController {
             $sRecord = "";
             foreach( $aRecord as $sField => $sValue ) {
 //              $sRecord .= "'$sValue',";
-              $sRecord .= "'".$this->pdo->quote($sValue)."',";
+//              $sRecord .= "'".$this->pdo->quote($sValue)."',";
+              $sRecord .= $this->pdo->quote($sValue).",";
             }
             $sData .= substr( $sRecord, 0, -1 );
             $sData .= ");\n";
