@@ -13,7 +13,7 @@ class Model_Migration extends Model_Abstract_M {
     function init() {
         parent::init();
         if ($this->prefix === null) {
-            $this->prefix = $this->api->getConfig('atk4_mysql_migrator/project_unique_id','NO_NAME');
+            $this->prefix = $this->api->getConfig('atk4_mysql_migrator/project_unique_id');
         }
         $this->prefix = preg_replace("/[^A-Za-z0-9_]/", '', $this->prefix);
 
